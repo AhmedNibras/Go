@@ -1,42 +1,49 @@
 package main
 
-import {
-	"fmt"
-}
+import (
+    "fmt"
+    "io/ioutil"
+)
 
 func main() {
-   	// Declaring a variable
-   var sentence string
+
+
+	// Read the file
+	word, err := ioutil.ReadFile("word.txt")
+    if err != nil {
+        panic(err)
+    }
+	// Convert the file to a string
+    wordText := string(word)
+   	
 
    // declaring the variables to store the count of vowels
    var vowelsCount int
 
-   // initializing the variable sentence
-   sentence = "Ek baar phir se"
-   
+
    // initializing the variable vowelsCount
    vowelsCount = 0
 
    fmt.Println("Program to find the count of vowels within the function.")
    
    // iterating over the sentence
-   for i := 0; i < len(sentence); i++ {
+   for i := 0; i < len(word); i++ {
       // skipping the spaces in the sentence
-      if sentence[i] == ' ' {
+      if word[i] == ' ' {
          continue
       }
    
       // comparing the current character with the vowels
-      if sentence[i] == 'a' || sentence[i] == 'e' || sentence[i] == 'i' || sentence[i] == 'o' || sentence[i] == 'u' ||
-         sentence[i] == 'A' || sentence[i] == 'E' || sentence[i] == 'I' || sentence[i] == 'O' || sentence[i] == 'U' {
+      if word[i] == 'a' || word[i] == 'e' || word[i] == 'i' || word[i] == 'o' || word[i] == 'u' ||
+         word[i] == 'A' || word[i] == 'E' || word[i] == 'I' || word[i] == 'O' || word[i] == 'U' {
 
-            // if the current character is a vowel it's increase the count variable
+      // if the current character is a vowel it's increase the count variable
             vowelsCount++
       } 
    }
 
    // printing the count of vowels
-   fmt.Println("Sentence:- \n", sentence)
+   fmt.Println("Sentence:- \n", wordText)
 
    // printing the count of vowels in the sentence
    fmt.Println("Result:- \nThe total number of vowels in the above sentence are", vowelsCount)

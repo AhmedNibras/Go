@@ -7,10 +7,13 @@ import (
 
 func main() {
 
+
+	// Read the file
 	word, err := ioutil.ReadFile("word.txt")
     if err != nil {
         panic(err)
     }
+	// Convert the file to a string
     wordText := string(word)
    	
 

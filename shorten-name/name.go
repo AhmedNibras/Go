@@ -2,17 +2,30 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
 func main() {
-	fullNameArray := []string{"Nibras Ahmed", "Ahmed Saleem", "Ahsan Yousaf", "Muhammad Husnain"}
-	shortNameArray := []string{}
-	for _, name := range fullNameArray {
-		parts := strings.Split(name, " ")
-		first, last := parts[0], parts[len(parts)-1]
-		shortNames := string(first[0]) + string(last[0])
-		shortNameArray = append(shortNameArray, shortNames)
+	// initialize fullNameArray and shortNameArray
+	fn := []string{"Nibras Ahmed", "Ahmed Saleem", "Ahsan Yousaf", "Muhammad Husnain"}
+	sn := []string{}
+
+	for _, n := range fn {
+		// initialize space
+		s := 0
+		// loop through the name
+		for i, c := range n {
+			// if space is found, break the loop
+			if c == ' ' {
+				s = i
+				break
+			}
+		}
+		// get the short name		
+		shortNames := string(n[0]) + string(n[s+1])
+		// append the short name to the shortNameArray
+		sn = append(sn, shortNames)
 	}
-	fmt.Println(shortNameArray)
+
+	// print the shortNameArray
+	fmt.Println(sn)
 }

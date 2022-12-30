@@ -1,3 +1,3 @@
-# Go
+# Hi, I'm Nibras! 👋
 
-Finding vowel number in the sentence/
+I hope this helps! Let me know if you have any further questions.

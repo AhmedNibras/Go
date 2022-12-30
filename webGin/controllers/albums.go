@@ -38,3 +38,31 @@ func PostAlbums(c *gin.Context) {
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
+
+func PutAlbums(c *gin.Context) {
+	id := c.Param("id")
+	for i, a := range albums {
+		if a.ID == id {
+			var newAlbum models.Album
+			if err := c.BindJSON(&newAlbum); err != nil {
+				return
+			}
+			albums[i] = newAlbum
+			c.IndentedJSON(http.StatusOK, newAlbum)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+
+func DeleteAlbums(c *gin.Context) {
+	id := c.Param("id")
+	for i, a := range albums {
+		if a.ID == id {
+			albums = append(albums[:i], albums[i+1:]...)
+			break
+		}
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "album deleted"})
+}
+

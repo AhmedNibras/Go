@@ -2,16 +2,23 @@ package main
 
 import (
 	"test/controllers"
+	"test/dbConnection"
 	"github.com/gin-gonic/gin"
 )
 
-
-
 func main() {
-	
 
-	// Set the router as the default 
+	// Set the router as the default
 	r := gin.Default()
+
+
+	// Connect to the database
+	// ----------------------------------------------------------------
+	dbConnection.Connection()
+
+	// Migrate the schema
+	// ----------------------------------------------------------------
+	// dbConnection.Migrate()
 
 	// Routes
 	// ----------------------------------------------------------------
@@ -32,7 +39,6 @@ func main() {
 
 	// PATCH to update an album's artist
 	r.PATCH("/albums/:id", controllers.PatchAlbums)
-	
 
 	// Listen and serve on
 	r.Run(":8080")

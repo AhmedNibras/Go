@@ -11,7 +11,6 @@ func main() {
 	// Set the router as the default
 	r := gin.Default()
 
-
 	// Migrate the schema
 	// ----------------------------------------------------------------
 	// dbConnection.Migrate()
@@ -34,7 +33,7 @@ func main() {
 		v1.DELETE("/albums/:id", controllers.DeleteAlbum)
 
 		// * Patch to update a single album
-		v1.PATCH("/albums/:id", controllers.PatchAlbums)
+		v1.PATCH("/albums/:id", controllers.PatchAlbum)
 
 	}
 

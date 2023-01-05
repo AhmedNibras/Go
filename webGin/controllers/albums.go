@@ -57,7 +57,6 @@ func DeleteAlbum(c *gin.Context) {
 	// Get the ID parameter from the URL
 	id := c.Param("id")
 	
-
 	//Check if the album is already in the database
 	if _, err := queries.GetAlbumQuery(id); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": "album not found"})
@@ -69,7 +68,7 @@ func DeleteAlbum(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "error deleting album"})
 		return
 	}
-	
+
 	// Return a success message
 	c.JSON(http.StatusOK, gin.H{"message": "album deleted"})
 }

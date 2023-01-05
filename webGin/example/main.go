@@ -2,8 +2,8 @@ package main
 
 import (
 	"test/controllers"
-	"test/dbConnection"
 	"github.com/gin-gonic/gin"
+
 )
 
 func main() {
@@ -12,34 +12,33 @@ func main() {
 	r := gin.Default()
 
 
-	// Connect to the database
-	// ----------------------------------------------------------------
-	dbConnection.Connection()
-
 	// Migrate the schema
 	// ----------------------------------------------------------------
 	// dbConnection.Migrate()
 
-	// Routes
+	// Group routes
 	// ----------------------------------------------------------------
-	// GET a list of albums
-	r.GET("/albums", controllers.GetAlbums)
+	// * Group routes by version
+	v1 := r.Group("/v1")
+	{
+		// * GET a list of albums
+		v1.GET("/albums", controllers.GetAlbums)
 
-	// GET a single album
-	r.GET("/albums/:id", controllers.GetAlbumsByID)
+		// * POST a new album
+		v1.POST("/albums", controllers.PostAlbums)
+		
+		// * GET a single album
+		v1.GET("/albums/:id", controllers.GetAlbum)
 
-	// POST a new album
-	r.POST("/albums", controllers.PostAlbums)
+		// * DELETE to remove a single album
+		v1.DELETE("/albums/:id", controllers.DeleteAlbum)
 
-	// PUT to update a new album
-	r.PUT("/albums/:id", controllers.PutAlbums)
+		// * Patch to update a single album
+		v1.PUT("/albums/:id", controllers.PatchAlbums)
 
-	// DELETE an album
-	r.DELETE("/albums/:id", controllers.DeleteAlbums)
+	}
 
-	// PATCH to update an album's artist
-	r.PATCH("/albums/:id", controllers.PatchAlbums)
 
-	// Listen and serve on
+	// * Listen and serve on
 	r.Run(":8080")
 }

@@ -33,6 +33,7 @@ func Connection() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Successfully connected!")
 	return conn
 }
 

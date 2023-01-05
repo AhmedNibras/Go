@@ -3,105 +3,88 @@ package controllers
 import (
 	"net/http"
 	"test/models"
+	"test/queries"
 
 	"github.com/gin-gonic/gin"
 )
 
-
-
-// albums slice to seed record data.
-var albums = []models.Album{
-	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
-}
-
-
-// GetAlbums responds with the list of all albums as JSON.
+// GetAlbums returns a list of all albums in the database.
 func GetAlbums(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, albums)
-}
-
-
-// GetAlbumsByID responds with the the album of the given id.
-func GetAlbumsByID(c *gin.Context) {
-	id := c.Param("id")
-	for _, a := range albums {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
-}
-
-
-// PostAlbums adds an album from JSON received in the request body.
-func PostAlbums(c *gin.Context) {
-
-	var newAlbum models.Album
-	if err := c.BindJSON(&newAlbum); err != nil {
+	// Call the GetAlbumsQuery function to get a list of albums
+	albums, err := queries.GetAlbumsQuery()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error getting albums"})
 		return
 	}
-    
-	albums = append(albums, newAlbum)
-	c.IndentedJSON(http.StatusCreated, newAlbum)
+	// Return the list of albums as JSON
+	c.JSON(http.StatusOK, albums)
 }
 
-
-// PutAlbums updates an album identified by the id.
-func PutAlbums(c *gin.Context) {
-	id := c.Param("id")
-	for i, a := range albums {
-		if a.ID == id {
-			var newAlbum models.Album
-			if err := c.BindJSON(&newAlbum); err != nil {
-				return
-			}
-			albums[i] = newAlbum
-			c.IndentedJSON(http.StatusOK, newAlbum)
-			return
-		}
+// PostAlbums adds an album to the database.
+func PostAlbums(c *gin.Context) {
+	// Validate input
+	var req models.Album
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
-}
-
-
-// DeleteAlbums deletes an album identified by the id.
-func DeleteAlbums(c *gin.Context) {
-	id := c.Param("id")
-	for i, a := range albums {
-		if a.ID == id {
-			albums = append(albums[:i], albums[i+1:]...)
-			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album deleted"})
-			return
-		}
+	// Call the PostAlbumsQuery function to add the album
+	album, err := queries.PostAlbumsQuery(&req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "album not found"})
+	// Return the newly inserted album as JSON
+	c.JSON(http.StatusCreated, album)
 }
 
-// PatchAlbums partially updates an album identified by the id.
+// GetAlbum returns a single album from the database.
+func GetAlbum(c *gin.Context) {
+	// Get the ID parameter from the URL
+	id := c.Param("id")
+	// Call the GetAlbumQuery function to get the album
+	album, err := queries.GetAlbumQuery(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error getting album"})
+		return
+	}
+	// Return the album as JSON
+	c.JSON(http.StatusOK, album)
+}
+
+
+// DeleteAlbum deletes an album from the database.
+func DeleteAlbum(c *gin.Context) {
+	// Get the ID parameter from the URL
+	id := c.Param("id")
+	// Call the DeleteAlbumQuery function to delete the album
+	err := queries.DeleteAlbumQuery(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error deleting album"})
+		return
+	}
+	// Return a 204 status code
+	c.Status(http.StatusNoContent)
+}
+
+// PatchAlbum updates an album in the database.
 func PatchAlbums(c *gin.Context) {
+	// Get the ID parameter from the URL
 	id := c.Param("id")
-	for i, a := range albums {
-		if a.ID == id {
-			var val models.Album
-			if err := c.BindJSON(&val); err != nil {
-				return
-			}
-			if val.Title != "" {
-				albums[i].Title = val.Title
-			}
-			if val.Artist != "" {
-				albums[i].Artist = val.Artist
-			}
-			if val.Price != 0 {
-				albums[i].Price = val.Price
-			}
-			c.JSON(http.StatusOK, albums[i])
-			return
-		}
+	// Validate input
+	var req models.Album
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+	// Call the PutAlbumQuery function to update the album
+	album, err := queries.PatchAlbumQuery(id, &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error updating album"})
+		return
+	}
+	// Return the updated album as JSON
+	c.JSON(http.StatusOK, album)
 }
+
+

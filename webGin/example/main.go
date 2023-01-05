@@ -2,16 +2,11 @@ package main
 
 import (
 	"test/router"
-	"github.com/gin-gonic/gin"
-
+	// "test/dbConnection"
 )
 
 func main() {
-	// Set the gin mode
-	// ----------------------------------------------------------------
-	gin.SetMode(gin.DebugMode)
-
-	// Migrate the schema
+	// Migrate the database
 	// ----------------------------------------------------------------
 	// dbConnection.Migrate()
 

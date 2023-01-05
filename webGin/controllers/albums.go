@@ -20,23 +20,24 @@ func GetAlbums(c *gin.Context) {
 	c.JSON(http.StatusOK, albums)
 }
 
-// PostAlbums adds an album to the database.
+// PostAlbums adds an array of album to the database.
 func PostAlbums(c *gin.Context) {
 	// Validate input
-	var req models.Album
+	var req []models.Album
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// Call the PostAlbumsQuery function to add the album
-	album, err := queries.PostAlbumsQuery(&req)
+	// Call the PostAlbumQuery function to add the album
+	albums, err := queries.PostAlbumQuery(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error adding album"})
 		return
 	}
-	// Return the newly inserted album as JSON
-	c.JSON(http.StatusCreated, album)
+	// Return the newly added album as JSON
+	c.JSON(http.StatusCreated, albums)
 }
+
 
 // GetAlbum returns a single album from the database.
 func GetAlbum(c *gin.Context) {

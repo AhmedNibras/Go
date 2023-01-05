@@ -37,7 +37,25 @@ func GetAlbumsQuery() ([]models.Album, error) {
 }
 
 // PostAlbumsQuery adds an album to the database.
-func PostAlbumsQuery(a *models.Album) (*models.Album, error) {
+// func PostAlbumsQuery(a *models.Album) (*models.Album, error) {
+// 	// Prepare the INSERT statement
+// 	insertData := "INSERT INTO album (id, title, artist, price) VALUES ($1, $2, $3, $4)"
+// 	stmt, err := dbConnection.Connection().Prepare(insertData)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer stmt.Close()
+// 	// Execute the INSERT statement
+// 	_, err = stmt.Exec(a.ID, a.Title, a.Artist, a.Price)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	// Return the newly inserted album
+// 	return a, nil
+// }
+
+// PostAlbumQuery add an array of albums to the database
+func PostAlbumQuery(a []models.Album) ([]models.Album, error) {
 	// Prepare the INSERT statement
 	insertData := "INSERT INTO album (id, title, artist, price) VALUES ($1, $2, $3, $4)"
 	stmt, err := dbConnection.Connection().Prepare(insertData)
@@ -46,13 +64,19 @@ func PostAlbumsQuery(a *models.Album) (*models.Album, error) {
 	}
 	defer stmt.Close()
 	// Execute the INSERT statement
-	_, err = stmt.Exec(a.ID, a.Title, a.Artist, a.Price)
-	if err != nil {
-		return nil, err
-	}
+	for _, album := range a {
+		_, err = stmt.Exec(album.ID, album.Title, album.Artist, album.Price)
+		if err != nil {
+			return nil, err
+		}
+	}	
 	// Return the newly inserted album
 	return a, nil
 }
+
+
+
+
 
 // GetAlbumQuery returns a single album from the database.
 func GetAlbumQuery(id string) (*models.Album, error) {

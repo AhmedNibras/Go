@@ -1,44 +1,17 @@
 package main
 
 import (
-	"test/controllers"
-	"github.com/gin-gonic/gin"
-
+	"test/router"
+	// "test/dbConnection"
 )
 
 func main() {
-
-	// Set the router as the default
-	r := gin.Default()
-
-
-	// Migrate the schema
+	// Migrate the database
 	// ----------------------------------------------------------------
 	// dbConnection.Migrate()
 
-	// Group routes
+	// Setup the router
 	// ----------------------------------------------------------------
-	// * Group routes by version
-	v1 := r.Group("/v1")
-	{
-		// * GET a list of albums
-		v1.GET("/albums", controllers.GetAlbums)
+	router.SetupRouter()
 
-		// * POST a new album
-		v1.POST("/albums", controllers.PostAlbums)
-		
-		// * GET a single album
-		v1.GET("/albums/:id", controllers.GetAlbum)
-
-		// * DELETE to remove a single album
-		v1.DELETE("/albums/:id", controllers.DeleteAlbum)
-
-		// * Patch to update a single album
-		v1.PUT("/albums/:id", controllers.PatchAlbums)
-
-	}
-
-
-	// * Listen and serve on
-	r.Run(":8080")
 }
